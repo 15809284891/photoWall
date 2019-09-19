@@ -1,0 +1,42 @@
+<view class="content" id ="{{ShowImageDetail?'hide':'showBlock'}}" style = "height:auto;background:#F1F2F7">
+  <swiper style="height:{{windowW*0.618+'px'}}" indicator-dots="true" indicator-color="#FFFFFF" autoplay="true" interval="2000" duration="500" circular="true">
+    <block wx:for="{{banners}}" wx:key="">
+      <swiper-item>
+        <image class='bannerImage' style = "height:{{windowW*0.618+'px'}}" src="{{item}}" mode="aspectFill" data-index ="{{index}}"  bindtap="onHandleOpenMiniEvent"></image>
+      </swiper-item>
+    </block>
+  </swiper>
+
+  <text style="font-size:18px;line-height: 35px;margin-left:1.5%">照片墙</text>
+  <view  class ="emptyFileView" id ="{{ShowMainView?'hide':'showFlex'}}" style="height:{{windowH-120-windowW*0.618+'px'}}">
+    <image src="../../src/empty.png" style="width:{{windowW*0.618/3*2.0+'px'}};height:{{103/180*(windowW*0.618/3*2.0)+'px'}}"></image>
+    <text>点击 ➕ 按钮\n上传您的第一张照片吧~</text>
+  </view> 
+    
+  <view class="photos-content" id ="{{ShowMainView?'showBlock':'hide'}}">
+    <view class="photos-left-content"> 
+      <view class="photos-content-view" wx:for="{{imageList}}"  wx:key="" wx:if="{{index%2==0}}">
+        <image  class="photo"   data-index ="{{index}}" src="{{item.ImgUrl}} " bindtap="onHandleShowImageDetailEvent" mode="widthFix" data-url =  '{{ item.ImgUrl}}' ></image> 
+        <view class="opreationView">
+          <text class="lastModifyText">{{item.Date}}</text>
+          <image class = "operationButton" data-index ="{{index}}" src="../../src/more.png"  bindtap="onHandleShowOperationView"></image>
+        </view>
+      </view>
+    </view>
+
+    <view class="photos-right-content">
+      <view class="photos-content-view" wx:for="{{imageList}}" wx:key="" wx:if="{{index%2==1}}" > 
+        <image class="photo"     data-index ="{{index}}" src="{{item.ImgUrl}}" bindtap="onHandleShowImageDetailEvent" mode="widthFix" data-url =  '{{ item.ImgUrl}}'> 
+        </image> 
+        <view class="opreationView">
+          <text class="lastModifyText" >{{item.Date}}</text>
+          <image class = "operationButton" data-index ="{{index}}" src="../../src/more.png"  bindtap="onHandleShowOperationView"></image>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <image class="uploadImageButton"  bindtap="onHandleUploadFileEvent" src="../../src/add.png"></image>
+</view>
+
+<image class="imageDetail" id ="{{ShowImageDetail?'showBlock':'hide'}}" style = "height:{{windowH+'px'}};background:#E1E5F0"src="{{clickedImageUrl}}"  mode="aspectFit" bindtap="onHandleHideImageDetail"     ></image>

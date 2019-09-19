@@ -1,0 +1,100 @@
+/* pages/composeFile.wxss */
+page{
+  background-color: #F1F2F7;
+}
+.composeImage{
+  padding-top: 0px;
+
+  width: 100%;
+  margin: 0 auto;
+  padding-bottom: 0px;
+}
+
+.addWatermerTipView{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  /* justify-content: center; */
+  background: #F1F2F7;
+  
+}
+
+.addWatermerTipView button{
+  display: flex;
+  flex-direction: column;
+
+align-items: center;
+
+justify-content: center;
+  background: #F1F2F7;
+  border-radius:0px;
+  height: 90px;
+  font-size: 16px;
+  margin-top: 80px;
+  line-height: 30px;
+  
+}
+ 
+.addWatermerTipView button::after{
+ border-radius:0px;
+ border: none;
+ 
+}
+.customCanvas{
+ 
+  margin: 0 auto;
+  padding-bottom: 0px;
+
+}
+#hide{
+  display: none;
+}
+#show{
+  display: flex;
+}
+#showBlock{
+  display: block;
+}
+.composeImageButton {
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  height: 58px;
+  border-radius:0px;
+  padding-bottom: 10px;
+}
+
+.imageFile {
+ 
+
+   padding-top: 0px;
+
+  width: 100%;
+  margin: 0 auto;
+  padding-bottom: 0px;
+}
+
+.addWaterButton {
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  height: 58px;
+  border-radius:0px;
+  padding-bottom: 10px;
+}
+.addWaterButton::after{
+  border-radius:0px;
+}
+
+.tipText{
+
+  font-size: 16px;
+  color:#3052E6;
+}
+.blindWatermar{
+  width:100%
+}
+.watermer-contentView{
+  margin-top: 20px;
+  width: 100%;
+}

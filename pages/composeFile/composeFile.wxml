@@ -1,0 +1,27 @@
+<!--pages/composeFile.wxml-->
+
+<view class ="composeView" id="{{ShowComposeView?'showBlock':'hide'}}" style="background:#FFFFFF">
+  <image class="imageFile" style = "height:{{windowH*0.4+'px'}};background:#E1E5F0"src="{{ImgUrl}}"  mode="aspectFit" ></image>
+  <text class="tipText"  style="color:#3052E6">\n\n• 水印内容 •</text>
+  <view class="addWatermerTipView "id = "{{ShowWatermerView?'show':'hide'}}" style="width:{{windowW+'px'}}; height:{{windowH-58-windowH*0.4-80+'px'}};">
+    <button>
+      <text style="font-size:18px">您还没有水印</text>
+      <text style="color:#8a8a8a">点击“创建盲水印”</text>
+      <text style="color:#8a8a8a">创建个性水印吧</text>
+    </button>
+  </view>
+  <view class="watermer-contentView">
+    <image class="blindWatermar" id = "{{ShowWatermerView?'hide':'showBlock'}}" style="background:#E1E5F0" src="{{WatermarImgUrl}}" mode="aspectFit"></image>
+  </view>
+  <button class = "composeImageButton" id = "{{ShowWatermerView?'showBlock':'hide'}}" style="background:#3052E6;color:white"  bindtap="onHandleShowAddWaterViewEvent">创建盲水印</button>
+  <button class = "composeImageButton" id = "{{ShowWatermerView?'hide':'showBlock'}}" style="background:#3052E6;color:white"  bindtap="onHandleEmbedWatermarkEvent">合成盲水印</button>
+</view>
+
+<view class="fetchBindWatermarView" id  = "{{ShowFetchView?'showBlock':'hide'}}" >
+  <text class="tipText" style="color:#3052E6">• 合成的盲水印图片 •</text>
+  <image class='composeImage' style = "height:{{windowH*0.4+'px'}}" src="{{ComposeImageURL}}" mode="aspectFit"></image>
+  <text class="tipText" style="color:#3052E6">\n• 提取的水印内容 •</text>
+  <image class="blindWatermar" style="background:#E1E5F0" src="{{FetchWatermerURL}}" mode="aspectFit"></image>
+  <button class = "composeImageButton" style="background:#3052E6;color:white"  bindtap="onHandleFetchWatermarEvent">提取盲水印</button>
+</view>
+  

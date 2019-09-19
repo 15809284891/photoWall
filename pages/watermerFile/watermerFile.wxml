@@ -1,0 +1,12 @@
+<!--pages/watermerFile/watermerFile.wxml-->
+
+<view class="paintWatermaerView  {{ShowMainView?'hide':'show'}}" style = "height:{{windowH-58+'px'}}">
+  <image class='bannerImage' style = "height:{{windowW*0.618+'px'}}" src="../../src/banner.jpg" mode="aspectFill"></image>
+  <view class="contentView" style = "height:{{windowH-58-windowW*0.618+'px'}}">
+  <text class="tipText">•  请 打 造 您 的 专 属 印 章 🖌 •</text>
+   <canvas canvas-id = "customCanvas" style="background:#E1E5F0;width:{{canvasw+'px'}}; height:{{canvasw+'px'}};margin: 0 auto" disable-scroll="false" bindtouchstart="canvasStart" bindtouchmove="canvasMove" bindtouchcancel="canvasEnd" binderror="canvasIdErrorCallback">
+    <button class="clearButton"  bindtap="clearCanvas">清除</button>
+  </canvas>
+  </view>
+  <button class = "uploadWaterMark" style="background:#3052E6;color:white"  bindtap="onHandleUploadWaterMarkEvent">确定</button>
+</view>

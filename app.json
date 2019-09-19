@@ -1,0 +1,21 @@
+{
+  "pages": [
+    "pages/index/index",
+    "pages/logs/logs",
+    "pages/composeFile/composeFile",
+    "pages/watermerFile/watermerFile"
+  ],
+  "window": {
+    "backgroundTextStyle": "light",
+    "navigationBarBackgroundColor": "#F1F2F7",
+    "navigationBarTitleText": "腾讯云存储照片墙",
+    "navigationBarTextStyle": "black"
+  },
+  "sitemapLocation": "sitemap.json",
+  "cloud":true,
+  "navigateToMiniProgramAppIdList": [
+    "wx3b953c2fddbd890a",
+    "wxe2039b83454e49ed"
+  ]
+}
+
