@@ -25,20 +25,22 @@
 ### 5. 在数据万象控制台绑定Bucket
 > 数据万象->Bucket管理->绑定Bucket->绑定已有Bucket
 ### 6. [下载安装微信开发者工具](https://developers.weixin.qq.com/miniprogram/dev/devtools/download.html   )
-### 7. [GitHub下载照片墙demo](https://github.com/15809284891/photoWall )
+### 7. [GitHub下载照片墙demo](https://github.com/15809284891/photoWall ),导入到微信开发者工具中
+      1. 修改utils/config.js文件，将里面的"karisphotos-1253653367"修改为您的bucket的名称（注意该bucket需要绑定数据万象）
+      2. 将所有的ap-chengdu修改为您的bucket所在的region、比如您的bucket在beijing,那么就将ap-chengdu修改为ap-beijing
+      3. 将piccd后面的cd修改为您的bucket所在的region的简称。例如您的region是ap-beijing，那么就将其修改为"picbj"
 
 
 
 ## 开发过程：
 
-> 以下内容会现场教学
 
 #### 配置域名:
 小程序里请求cos需要登录到[微信公众平台](https://mp.weixin.qq.com/wxamp/devprofile/get_profile?token=196154795&lang=zh_CN)，在”开发”->”开发设置”中，配置域名白名单
 
-> 一个存储桶:可以配置bucket域名作为白名单域名，例如examplebucket-1250000000.cos.ap-guangzhou.myqcloud.com,项目中需要配置的域名如下(request、downloadFile、uploadFile中都要配置):
+> 一个存储桶:可以配置bucket域名作为白名单域名，例如examplebucket-1250000000.cos.region.myqcloud.com,项目中需要配置的域名如下(request、downloadFile、uploadFile中都要配置):
 
->>!注意请替换下面exampleBucketName-appId为你自己的bucketname-appId，ap-chengdu修改为bucketname-appId所在的region
+>>!注意请替换下面exampleBucketName-appId为你自己的bucketname-appId，ap-chengdu修改为bucketname-appId所在的region,piccd后面的cd修改为您的bucket所在region的简称，例如您的region是ap-beijng，那么就将piccd修改为picbj
 >>
 >>https://exampleBucketName-appId.cos.ap-chengdu.myqcloud.com
 >>
@@ -52,7 +54,7 @@
   - 控制台开通云函数
   -	新建文件夹functions
   - Project.config.json中配置:"cloudfunctionRoot": "functions/"
-  - 新建函数sts:
+  - 新建函数sts(也可以命名为其他的，但是需要将config/utils.js中的sts修改为您重新命名的云函数名称):
   - 在云开发控制台给云函数配置环境变量secretKey、secretId
   - json 中添加如下代码
   ```
