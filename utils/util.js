@@ -311,6 +311,36 @@ function canvasToTempFilePath(canvasID){
   })
   return p;
 }
+function downloadFile(url){
+  var p = new Promise(function (resolve,reject){
+    wx.downloadFile({
+      url:url,
+      success:function(res){
+        resolve(res);
+      },
+      fail:function(err){
+        reject(res)
+      }
+    })
+  })
+  return p;
+}
+
+function saveImageToPhotosAlbum(path){
+  var p = new Promise(function(resolve,reject){
+    wx.saveImageToPhotosAlbum({
+      filePath: path,
+      success: function (res) {
+        resolve(res);
+      },
+      fail: function (err) {
+        reject(err);
+      }
+    })
+  })
+  return p; 
+}
+
 module.exports = {
   formatTime: formatTime,
   getCOSInstance: getCOSInstance,
@@ -327,6 +357,8 @@ module.exports = {
   chooseImage:chooseImage,
   getImageInfo: getImageInfo,
   timestampToString: timestampToString,
-  canvasToTempFilePath: canvasToTempFilePath
+  canvasToTempFilePath: canvasToTempFilePath,
+  downloadFile:downloadFile,
+  saveImageToPhotosAlbum: saveImageToPhotosAlbum
 }
 

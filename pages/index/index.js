@@ -43,9 +43,6 @@ Page({
    this.handleRefreshData();
   },
   
-  /**
-   * 小程序跳转
-   */
   onHandleOpenMiniEvent:function(e){
     var index = parseInt(e.currentTarget.dataset.index)
     var appID = (index == 0) ? "wx3b953c2fddbd890a" : "wxe2039b83454e49ed"
@@ -53,69 +50,34 @@ Page({
       appId: appID
     })
   },
-
   /**
-  *上传文件
-  */
+   * 上传图片
+   * chooseImage
+   * postObject
+   * updateView
+   */
   onHandleUploadFileEvent: function () {
     var that = this;
-   
+    
   },
-  /**
-   * 获取照片列表
-   */
-  handleRefreshData: function () {
-    wx.showNavigationBarLoading() //在标题栏中显示加载;
+  
+  handleUpdateView: function (filename,data){
+    var dic;
     var that = this;
-    var imgs = [];
-    cos.getBucket({
-      Bucket: config.Bucket, /* 必须 */
-      Region: config.Region,    /* 必须 */
-      Delimiter: '/'
+    var imgList = this.data.imageList;
+    var prefix = 'https://' + config.Bucket + '.cos.' + config.Region + '.myqcloud.com' + '/' + filename;
 
-    }, function (err, data) {
-      wx.hideNavigationBarLoading() //完成停止加载
-      wx.stopPullDownRefresh() //停止下拉刷新
-      let contents = data.Contents || [];
-      if (contents.length) {
-        contents.forEach(function (item, index) {
-          var prefix = 'https://' + config.Bucket + '.cos.' + config.Region + '.myqcloud.com' + '/' + item.Key;
-          //日期格式转换
-          let time = util.timestampToString(item.LastModified, 'L');
-          var dic = { "ImgUrl": prefix, "Date": time };
-          imgs.push(dic)
-        });
-        that.setData({
-          imageList: imgs,
-          ShowMainView: true
-
-        });
-      } else {
-        that.setData({
-          ShowMainView: false
-        });
-      }
-
-    });
-  },
- 
-  /**
-    * 删除图片
-  */
-  hanldeDeleteCurrentFile: function (e) {
-    var index = parseInt(e.currentTarget.dataset.index);
-    var dic = this.data.imageList[index];
-    var that = this;
-
-
+    let time = util.timestampToString(data.headers.Date, 'L');
+    dic = { "ImgUrl": prefix, "Date": time };
+    imgList.unshift(dic);
+    that.setData({
+      ShowMainView: true,
+      imageList: imgList
+    })
   },
 
-
-
-  /**
-  * 点击图片查看大图
-  */
   onHandleShowImageDetailEvent:function(e){
+  
     var that = this;
     var index = parseInt(e.currentTarget.dataset.index)
     var dic = this.data.imageList[index];
@@ -126,9 +88,7 @@ Page({
     })
     
   },
-  /**
-   * 
-   */
+
   onHandleHideImageDetail: function (e) {
     var that = this;
     var index = parseInt(e.currentTarget.dataset.index)
@@ -159,6 +119,7 @@ Page({
     })
   },
 
+
   handleWatermerEvent:function(e){
 
     var that = this;
@@ -177,42 +138,85 @@ Page({
     var index = parseInt(e.currentTarget.dataset.index);
     var dic = this.data.imageList[index];
     var key = util.getUrlRelativePath(dic.ImgUrl);
-
-    wx.downloadFile({
-      url: dic.ImgUrl,
-      success(res) {
-        wx.saveImageToPhotosAlbum({
-          filePath: res.tempFilePath,
-          success: res => {
-            util.showToast("保存成功", true);
-          },
-          fail: function (err) {
-            util.hideLoading();
-            if (err.errMsg == "saveImageToPhotosAlbum:fail auth deny") {
-              wx.openSetting({
-                success(settingData) {
-                  if (settingData.authSetting['scope.writePhotosAlbum']) {
-                    util.showToast("获取权限成功，请再次点击保存", true);
-                  } else {
-                    util.showToast("获取权限失败，请授予权限，否则无法保存", false);
-                  }
-                }
-              })
+    util.downloadFile(dic.ImgUrl).then(res=>{
+      return util.saveImageToPhotosAlbum(res.tempFilePath);
+    },function(err){
+      util.showToast("下载失败",false);
+    }).then(res=>{
+      util.showToast("保存成功", true);
+    },function(err){
+      util.hideLoading();
+      if (err.errMsg == "saveImageToPhotosAlbum:fail auth deny") {
+        wx.openSetting({
+          success(settingData) {
+            if (settingData.authSetting['scope.writePhotosAlbum']) {
+              util.showToast("获取权限成功，请再次点击保存", true);
+            } else {
+              util.showToast("获取权限失败，请授予权限，否则无法保存", false);
             }
           }
         })
-      },
-      fail(err) {
-        util.showToast("下载失败", false);
       }
     })
 
-
   },
   
- 
-  
-  
+  hanldeDeleteCurrentFile: function (e) {
+    var index = parseInt(e.currentTarget.dataset.index);
+    var dic = this.data.imageList[index];
+    var key = util.getUrlRelativePath(dic.ImgUrl);
+    var that = this;
+    var tempImgs = this.data.imageList || [];
+    cos.deleteObject({
+      Bucket: config.Bucket, /* 必须 */
+      Region: config.Region,    /* 必须 */
+      Key: key                            /* 必须 */
+    }, function (err, data) {
+      tempImgs.splice(index, 1);
+      that.setData({
+        imageList: tempImgs
+       }),
+      that.handleRefreshData();
+      err ? util.showToast("删除失败", false) : util.showToast("删除成功", true);
+  });
+
+  },
+
+
+  handleRefreshData: function () {
+    wx.showNavigationBarLoading() //在标题栏中显示加载;
+    var that = this;
+    var imgs = [];
+    cos.getBucket({
+      Bucket: config.Bucket, /* 必须 */
+      Region: config.Region,    /* 必须 */
+      Delimiter: '/'
+
+    }, function (err, data) {
+      wx.hideNavigationBarLoading() //完成停止加载
+      wx.stopPullDownRefresh() //停止下拉刷新
+      let contents = data.Contents||[];
+      if(contents.length){
+        contents.forEach(function (item, index) {
+          var prefix = 'https://' + config.Bucket + '.cos.' + config.Region + '.myqcloud.com' + '/' + item.Key;
+          //日期格式转换
+          let time = util.timestampToString(item.LastModified, 'L');
+          var dic = { "ImgUrl": prefix, "Date": time };
+          imgs.push(dic)
+        });
+        that.setData({
+          imageList: imgs,
+          ShowMainView: true
+
+        });
+      }else{
+        that.setData({
+          ShowMainView: false
+        });
+      }
+      
+    });
+  },
 
   onPullDownRefresh:function(){
     this.handleRefreshData();

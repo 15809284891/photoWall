@@ -47,9 +47,33 @@ Page({
     util.showLoading("生成中")
     var that = this;
     if (this.data.arrx.length != 0) {
-    /**
-     * 上传盲水印到cos
-     */
+      util.showLoading("生成中...");
+      util.canvasToTempFilePath('customCanvas').then(res=>{
+        var filePath = res.tempFilePath;
+        //上传图片到cos
+        cos.postObject({
+          Bucket: config.Bucket,
+          Region: config.Region,
+          Key: watermerKey,
+          FilePath: filePath,
+          CacheControl: "no-cache"
+        }, function (err, data) {
+          util.hideLoading()
+          if (err) {
+            util.showToast("上传失败", false);
+
+
+          } else {
+            util.showToast("上传成功", true);
+            that.setData({
+              ShowMainView: true
+            })
+            wx.navigateBack({
+              delta: 1
+            })
+          }
+        })
+      })
 
     } else {
       util.showToast("未绘制任何内容", false);

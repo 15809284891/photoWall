@@ -19,7 +19,7 @@
 
 <view class="fetchBindWatermarView" id  = "{{ShowFetchView?'showBlock':'hide'}}" >
   <text class="tipText" style="color:#3052E6">• 合成的盲水印图片 •</text>
-  <image class='composeImage' style = "height:{{windowH*0.4+'px'}}" src="{{ComposeImageURL}}" mode="aspectFit"></image>
+  <image class='composeImage' style = "height:{{windowH*0.4+'px'}}" src="{{ComposedImageURL}}" mode="aspectFit"></image>
   <text class="tipText" style="color:#3052E6">\n• 提取的水印内容 •</text>
   <image class="blindWatermar" style="background:#E1E5F0" src="{{FetchWatermerURL}}" mode="aspectFit"></image>
   <button class = "composeImageButton" style="background:#3052E6;color:white"  bindtap="onHandleFetchWatermarEvent">提取盲水印</button>
