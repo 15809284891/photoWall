@@ -52,24 +52,28 @@ Page({
      * false:显示创建盲水印view
      */
     util.showLoading("检测盲水印...");
-   
-    
+  
   },
   
   /**
    * 检测图片有没有盲水印
    * >=80:有盲水印、显示提取页面
    * <80:没有盲水印、显示合成页面
+   * 规则:`{"rules": [{ "fileid": "/FetchImage/extract-${oringeFilekey}", "rule": "watermark/4/type/2/image/${Base64.encode(config.CiWatermerHttpHost)}" }]}`
    */
   handleDetectWatermer:function(){
     util.showLoading("检测盲水印...");
     var that = this;
+    var oringeFilekey = util.getUrlRelativePath(this.data.ImgUrl);
+    var composeKey = '/'+oringeFilekey;
     this.setData({
       ShowWatermerView: false,
       WatermarImgUrl: config.CosHost + config.WatermerKey
 
-    })
-   
+    });
+    
+    var url = config.CiV5Host + composeKey + '?image_process';
+    
   },
   
   
@@ -85,28 +89,26 @@ Page({
     var that  =this;
     var oringeFilekey = util.getUrlRelativePath(this.data.ImgUrl);
     var watermarkUrl = config.CiWatermerHttpHost;
-    var header = {};
-    var result;
-   
+ 
   },
   
 
   /**
    * 提取盲水印
    * rule :`{"rules":[{"fileid":"/FetchImage/extract-${oringeFilekey}","rule":"watermark/4/type/2/image/${Base64.encode(config.CiWatermerHttpHost)}"}]}`;
+   * 提取成功之后更新handleFetchView
    */
   onHandleFetchWatermarEvent:function(){
     util.showLoading("提取中...");
-    var that = this;
-    var oringeFilekey = util.getUrlRelativePath(this.data.ImgUrl);
-    
+   
+
   },
   
- 
-  fetchWatermerResult: function(rule,callback){
-    var that = this;
-    var oringeFilekey = util.getUrlRelativePath(this.data.ImgUrl);
-    var composeKey = '/' + oringeFilekey;
+  
+//统一处理盲水印事件
+  handleWatermerEvent: function(rule,callback){
+   
+   
   },
 
   /**
@@ -117,6 +119,12 @@ Page({
       //第一个不能忘 navigateTo:fail url "pages/fileDetail/pages/composeFile/composeFile" is not in app.json
       url: "/pages/watermerFile/watermerFile"
 
+    })
+  },
+  handleFetchView:function(){
+    this.setData({
+      FetchWatermerURL: "https://" + result.ProcessResults.Location,
+      showView: false
     })
   },
   handleShowFetchView: function (composeURL) {
