@@ -50,11 +50,11 @@ Page({
       appId: appID
     })
   },
-  /**
-   * 上传图片
-   * chooseImage
-   * postObject
-   * updateView
+  /**上传图片
+   * 1. 从图库选取图片:chooseImage
+   * 2. 判断图片大小:(>= 800*800)getImageInfo
+   * 3. 上传图片：postObject
+   * 4. 刷新界面:updateView
    */
   onHandleUploadFileEvent: function () {
     var that = this;
