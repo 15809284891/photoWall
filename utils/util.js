@@ -251,7 +251,7 @@ function chooseImage(){
       sizeType: ['original'],
       sourceType: ['album', 'camera'],
       success: function (res) {
-        resolve(res);
+          resolve( res.tempFiles[0].path);
       },
       fail: function (errMsg) {
         reject(errMsg);
@@ -267,7 +267,7 @@ function getImageInfo(filePath) {
       src: filePath,
       success: function (res) {
         if (res.height > 800 && res.width > 800) {
-          resolve(res);
+          resolve(filePath);
         } else {
           showToast("上传的文件宽高应大于800*800", false);
           reject();
@@ -278,22 +278,6 @@ function getImageInfo(filePath) {
   return promise;
 }
 
-function getImageInfo(filePath) {
-  var promise = new Promise(function (resolve, reject) {
-    wx.getImageInfo({
-      src: filePath,
-      success: function (res) {
-        if (res.height > 800 && res.width > 800) {
-          resolve(res);
-        } else {
-          showToast("上传的文件宽高应大于800*800", false);
-          reject();
-        }
-      }
-    })
-  });
-  return promise;
-}
 function canvasToTempFilePath(canvasID){
   var p = new Promise(function(resolve,reject){
     wx.canvasToTempFilePath({
