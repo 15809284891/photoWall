@@ -1,33 +1,32 @@
 // pages/composeFile.js
 var config = require('../../utils/config.js');
-
-var Base64 = require('../../lib/base64.js').Base64;
+var Base64 = require('../../libs/base64.js').Base64;
 var util = require('../../utils/util.js');
 var cos = require('../../utils/util.js').getCOSInstance();
-var ctx =null;
+var ctx = null;
+
 Page({
-   
   /**
    * 页面的初始数据
    */
   data: {
-    arrx:[],
-    arry:[],
-    arrz:[],
-    showView:true,
-    windowH:300,
+    arrx: [],
+    arry: [],
+    arrz: [],
+    showView: true,
+    windowH: 300,
     windowW: 300,
-    ShowWatermerView:false,//显示创建盲水印页面
+    ShowWatermerView: false,//显示创建盲水印页面
     ShowComposeView: false,//显示合成盲水印图片的页面
-    ShowFetchView:false,//显示提取页面
-   
-    ImgUrl: "",//原图的地址
-    WatermarImgUrl:"",//嵌入的盲水印的地址
-    FetchWatermerURL:"",//从合成图中提取出来的盲水印的地址
-    ComposedImageURL:"",//合成图的地址
+    ShowFetchView: false,//显示提取页面
 
-    canvasw:30,
-    canvash:30,
+    ImgUrl: "",//原图的地址
+    WatermarImgUrl: "",//嵌入的盲水印的地址
+    FetchWatermerURL: "",//从合成图中提取出来的盲水印的地址
+    ComposedImageURL: "",//合成图的地址
+
+    canvasw: 30,
+    canvash: 30,
   },
   /**
    * 生命周期函数--监听页面加载
@@ -43,74 +42,79 @@ Page({
     })
 
   },
-  
+
 
   onShow: function () {
     var that = this;
-    /**检测盲水印是否存在:headObject
-     * true:检测图片有没有盲水印
+    /**检测盲水印是否存在
+     * true:显示合成盲水印view
      * false:显示创建盲水印view
      */
     util.showLoading("检测盲水印...");
-  
+
   },
-  
+
   /**
    * 检测图片有没有盲水印
-   * >=80:有盲水印、显示提取页面
-   * <80:没有盲水印、显示合成页面
-   * 规则:`{"rules": [{ "fileid": "/FetchImage/extract-${oringeFilekey}", "rule": "watermark/4/type/2/image/${Base64.encode(config.CiWatermerHttpHost)}" }]}`
+   * `{"rules":[{"fileid":"/FetchImage/extract-${oringeFilekey}","rule":"watermark/4/type/2/image/${Base64.encode(config.CiWatermerHttpHost)}"}]}
    */
-  handleDetectWatermer:function(){
+  handleDetectWatermer: function () {
     util.showLoading("检测盲水印...");
     var that = this;
-    var oringeFilekey = util.getUrlRelativePath(this.data.ImgUrl);
-    var composeKey = '/'+oringeFilekey;
     this.setData({
       ShowWatermerView: false,
       WatermarImgUrl: config.CosHost + config.WatermerKey
 
-    });
-    
-    var url = config.CiV5Host + composeKey + '?image_process';
-    
+    })
+
+
   },
-  
-  
+
+
 
   /**
-  * 合成盲水印
-  * success:显示提取盲水印的页面
-  * failed:提示错误
-  * rule: `{"rules":[{"fileid":"${oringeFilekey}","rule":"watermark/3/type/2/image/${Base64.encode(watermarkUrl)}"}]}`
+  * 合成盲水印之后显示提取盲水印的页面
+   `{"rules":[{"fileid":"${oringeFilekey}","rule":"watermark/3/type/2/image/${Base64.encode(watermarkUrl)}"}]}`;
   */
   onHandleEmbedWatermarkEvent: function (watermarKey) {
-    util.showLoading("合成中");
-    var that  =this;
-    var oringeFilekey = util.getUrlRelativePath(this.data.ImgUrl);
-    var watermarkUrl = config.CiWatermerHttpHost;
- 
+   
   },
-  
+
 
   /**
    * 提取盲水印
-   * rule :`{"rules":[{"fileid":"/FetchImage/extract-${oringeFilekey}","rule":"watermark/4/type/2/image/${Base64.encode(config.CiWatermerHttpHost)}"}]}`;
-   * 提取成功之后更新handleFetchView
+   * `{"rules":[{"fileid":"/FetchImage/extract-${oringeFilekey}","rule":"watermark/4/type/2/image/${Base64.encode(config.CiWatermerHttpHost)}"}]}
    */
-  onHandleFetchWatermarEvent:function(){
+  onHandleFetchWatermarEvent: function () {
     util.showLoading("提取中...");
-   
+  
 
-  },
-  
-  
-//统一处理盲水印事件
-  handleWatermerEvent: function(rule,callback){
-   
    
   },
 
+  handleWatermerEvent: function (rule, callback) {
+    var headers = {};
+    var oringeFilekey = util.getUrlRelativePath(this.data.ImgUrl);
+
+    var composeKey = '/' + oringeFilekey;
+    var pathname = '/' + oringeFilekey;
+    var url = config.CiV5Host + composeKey + '?image_process';
+    headers["Pic-Operations"] = rule;
+    util.getAuthorization({
+      Method: 'POST', Pathname: pathname
+    }, function (AuthData) {
+      headers["Authorization"] = AuthData.Authorization;
+      headers["x-cos-security-token"] = AuthData.XCosSecurityToken,
+        util.post(url, headers).then((res) => {
+          util.hideLoading();
+          callback(res);
+        }).catch(res => {
+          util.hideLoading();
+          throw res;
+        })
+
+    })
+  },
   /**
    * 跳转到盲水印页面
    */
@@ -121,12 +125,6 @@ Page({
 
     })
   },
-  handleFetchView:function(){
-    this.setData({
-      FetchWatermerURL: "https://" + result.ProcessResults.Location,
-      showView: false
-    })
-  },
   handleShowFetchView: function (composeURL) {
     this.setData({
       ShowComposeView: false,
@@ -135,7 +133,7 @@ Page({
       ComposedImageURL: composeURL
     })
   },
-  handleShowComposeView: function ( watermarImgUrl) {
+  handleShowComposeView: function (watermarImgUrl) {
     this.setData({
       ShowComposeView: true,
       ShowWatermerView: false,
@@ -152,9 +150,9 @@ Page({
     })
   },
   onHide: function () {
-   this.handleClearView();
+    this.handleClearView();
   },
-  handleClearView:function(){
+  handleClearView: function () {
     this.setData({
       ShowComposeView: false,
       ShowWatermerView: false,

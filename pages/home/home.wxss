@@ -1,0 +1,163 @@
+/**index.wxss**/
+
+page{
+  background-color: #F1F2F7;
+}
+/**index.wxss**/
+.bannerImage{
+  padding-top: 0px;
+  width: 100%;
+ 
+}
+
+#hide{
+  display: none;
+}
+#showFlex{
+  display: flex;
+}
+#showBlock{
+  display: block;
+}
+
+
+
+.emptyFileView{
+  display: flex;
+  /* 上下布局，左右居中 */
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 80px;
+  
+}
+.emptyFileView image{
+  margin-top: 5%;
+}
+
+.emptyFileView text{
+  margin-top: 5%;
+  font-size: 14px;
+  text-align: center;
+}
+.emptyFileView button{
+  margin-top: 20%;
+  width: 60px;
+  height: 60px;
+  border-radius: 30px;
+  background-color: #3052E6;
+  color: #FFFFFF;
+  line-height: 60px;
+  font-size: 14px;
+  
+}
+
+.uploadImageButton {
+  position: fixed;
+  margin:auto;
+  left: 0;
+  right: 0;
+  bottom: 15px;
+  margin-top: 20%;
+  width: 60px;
+  height: 60px;
+  border-radius: 30px;
+}
+
+.photos-content {
+  padding-bottom: 80px;
+}
+.photos-content::after{
+  content: " ";
+  display: block;
+  clear: both;
+}
+.photos-left-content{
+   width: 50%;
+   float: left;
+   background-color: #F1F2F7
+   
+}
+.photos-right-content{
+   width: 50%;
+   float: left;
+   background-color: #F1F2F7
+   
+}
+.opreationView{
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  height: 20px;
+  margin-left:  3%;
+  margin-right: 3%;
+ 
+}
+
+.operationButton{
+  
+  margin-right: 0px;
+  height: 20px;
+  border-radius:0px;
+  font-size: 15px;
+  text-align: right;
+  width:20px;
+  background-color: #FFFFFF;
+  border: none;
+  
+  
+}
+.operationButton::after{
+  border-radius:0px;
+  border: none;
+}
+
+
+.lastModifyText{
+  font-size: 12px;
+  
+}
+.content{
+  margin: 1%;
+  background-color: #F1F2F7;
+  height: auto;
+}
+.photo{
+  width: 98%;
+  height: auto;
+  text-align: center;
+  margin-left:  0.5%;
+  margin-right: 0.5%;
+  margin-bottom: 0.5%;
+  margin-top: 0.5%;
+  display: inline-block;
+  border:1px solid #F1F2F7;
+}
+
+
+.photos-content-view{
+  margin-bottom: 2px;
+  margin-top: 2px;
+  margin-left: 1px;
+  margin-right: 1px;
+  background-color: white;
+}
+
+.image-group {
+  display: flex;
+  white-space: nowrap;
+ 
+}
+
+
+
+
+.imageDetail {
+ 
+
+   padding-top: 0px;
+
+  width: 100%;
+  margin: 0 auto;
+  padding-bottom: 0px;
+}

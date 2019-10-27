@@ -1,6 +1,6 @@
 {
   "pages": [
-    "pages/index/index",
+    "pages/home/home",
     "pages/logs/logs",
     "pages/composeFile/composeFile",
     "pages/watermerFile/watermerFile"
@@ -12,10 +12,9 @@
     "navigationBarTextStyle": "black"
   },
   "sitemapLocation": "sitemap.json",
-  "cloud":true,
+  "cloud": true,
   "navigateToMiniProgramAppIdList": [
     "wx3b953c2fddbd890a",
     "wxe2039b83454e49ed"
   ]
 }
-

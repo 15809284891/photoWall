@@ -1,25 +1,24 @@
-const moment = require('../lib/moment.min.js');
-var COS = require('../lib/cos-wx-sdk-v5.js');
-var CIAuth = require('../lib/cos-auth.js');
+const moment = require('../libs/moment.min.js');
+var COS = require('../libs/cos_lib/cos-wx-sdk-v5.js');
+var CIAuth = require('../libs/cos_lib/cos-auth.js');
+var config = require('./config.js');
 //xml解析
-var DOMParser = require('../lib/dom-parser.js').DOMParser;
+var DOMParser = require('../libs/parse/dom-parser.js').DOMParser;
 var XMLParser = new DOMParser();
-const etagListKey = "etagList";
-wx.cloud.init();
-function getCOSInstance(){
-  
+
+// wx.cloud.init();
+function getCOSInstance() {
   var cos = new COS({
     getAuthorization: function (options, callback) {
       wx.cloud.callFunction({
         // 云函数名称
-        name: 'sts',
+        name: config.STSName,
         // 传给云函数的参数
         data: {
         },
         complete: res => {
           console.log('callFunction test result: ', res)
           var credential = res.result.credential;
-
           callback({
             TmpSecretId: credential.credentials.tmpSecretId,
             TmpSecretKey: credential.credentials.tmpSecretKey,
@@ -35,22 +34,38 @@ function getCOSInstance(){
   return cos;
 }
 
-const formatTime = date => {
-  const year = date.getFullYear()
-  const month = date.getMonth() + 1
-  const day = date.getDate()
-  const hour = date.getHours()
-  const minute = date.getMinutes()
-  const second = date.getSeconds()
+/**
+ * 
+ * 时间转化
+ */
 
-  return [year, month, day].map(formatNumber).join('/') + ' ' + [hour, minute, second].map(formatNumber).join(':')
+function timestampToString(timestamp) {
+  moment.locale('en', {
+    longDateFormat: {
+      l: "YYYY-MM-DD",
+      L: "YYYY-MM-DD HH:mm"
+    }
+  });
+  return moment(timestamp).format('L');
 }
 
-const formatNumber = n => {
-  n = n.toString()
-  return n[1] ? n : '0' + n
+/**
+ * 从文件路径中获取文件名
+ */
+function getUrlRelativePath(fileURL) {
+  var arrUrl = fileURL.split("//");
+  var start = arrUrl[1].indexOf("/");
+  var relUrl = arrUrl[1].substring(start);//stop省略，截取从start开始到结尾的所有字符
+
+  if (relUrl.indexOf("?") != -1) {
+    relUrl = relUrl.split("?")[0];
+  }
+  return relUrl.substr(1);
 }
 
+/**
+ * loading
+ */
 function showLoading(message) {
   if (wx.showLoading) {
     // 基础库 1.1.0 微信6.5.6版本开始支持，低版本需做兼容处理
@@ -78,20 +93,18 @@ function hideLoading() {
   }
 
 }
-
-
-function timestampToString(timestamp) {
-  moment.locale('en', {
-    longDateFormat: {
-      l: "YYYY-MM-DD",
-      L: "YYYY-MM-DD HH:mm"
-    }
-  });
-  return moment(timestamp).format('L');
+function showToast(title, status) {
+  wx.showToast({
+    title: title,
+    icon: status ? 'success' : 'none',
+    duration: 2000
+  })
 }
 
-
-function parseExtractBlindWatermarkResponse(response){
+/**
+ * 返回结果解析
+ */
+function parseExtractBlindWatermarkResponse(response) {
   const XMLResponse = XMLParser.parseFromString(response)
 
   const originalNode = XMLResponse.getElementsByTagName('OriginalInfo')[0]
@@ -129,7 +142,7 @@ function parseExtractBlindWatermarkResponse(response){
 
 
 
-function  parseEmbedBlindWatermarkResponse(response) {
+function parseEmbedBlindWatermarkResponse(response) {
   var XMLResponse = XMLParser.parseFromString(response);
 
   var originalNode = XMLResponse.getElementsByTagName('OriginalInfo')[0];
@@ -145,7 +158,7 @@ function  parseEmbedBlindWatermarkResponse(response) {
   var processObjectHeightNode = processObjectNode.getElementsByTagName('Height')[0].childNodes[0];
   var processObjectSizeNode = processObjectNode.getElementsByTagName('Size')[0].childNodes[0];
   var processObjectQualityNode = processObjectNode.getElementsByTagName('Quality')[0].childNodes[0];
-  
+
 
   return {
     'OriginalInfo': {
@@ -165,10 +178,13 @@ function  parseEmbedBlindWatermarkResponse(response) {
 }
 
 
-function getAuthorization(options,callback){
+/**
+ * 获取签名
+ */
+function getAuthorization(options, callback) {
   wx.cloud.callFunction({
     // 云函数名称
-    name: 'sts',
+    name: config.STSName,
     // 传给云函数的参数
     data: {
     },
@@ -189,54 +205,24 @@ function getAuthorization(options,callback){
   });
 }
 
-function getUrlRelativePath(fileURL) {
-  var arrUrl = fileURL.split("//");
-  var start = arrUrl[1].indexOf("/");
-  var relUrl = arrUrl[1].substring(start);//stop省略，截取从start开始到结尾的所有字符
-
-  if (relUrl.indexOf("?") != -1) {
-    relUrl = relUrl.split("?")[0];
-  }
-  return relUrl.substr(1);
-}
-
-function saveComposedImage(key,value) {
-  var etagsList = wx.getStorageSync(etagListKey)||{};
-  etagsList[key]=value;
-  console.log("saveComposedImage", etagsList);
-  wx.setStorageSync(etagListKey, etagsList);
-  console.log("savedComposedImage etagsList", wx.getStorageSync(etagListKey));
-}
-
-function getComposedImageWarmerURL(etag) {
-  var warmerURL;
-  var etagsList = wx.getStorageSync(etagListKey) || {};
-  return etagsList['etag'];
-}
-
-function showToast(title,status){
-  wx.showToast({
-    title: title,
-    icon: status?'success':'none',
-    duration: 2000
-  })
-}
-
-function post(url,header){
-  var promise = new Promise((resolve,reject) => {
+/**
+ * promise
+ */
+function post(url, header) {
+  var promise = new Promise((resolve, reject) => {
     wx.request({
       url: url,
-      header:header,
-      method:'POST',
-      success:function(res){
+      header: header,
+      method: 'POST',
+      success: function (res) {
         hideLoading();
-        if(res.statusCode == 200){
+        if (res.statusCode == 200) {
           resolve(res);
-        }else{
+        } else {
           reject(res.data);
         }
       },
-      fail:function(errMsg){
+      fail: function (errMsg) {
         hideLoading();
         reject(errMsg);
       }
@@ -244,14 +230,15 @@ function post(url,header){
   })
   return promise;
 }
-function chooseImage(){
+
+function chooseImage() {
   var p = new Promise(function (resolve, reject) {
     wx.chooseImage({
       count: 10,
       sizeType: ['original'],
       sourceType: ['album', 'camera'],
       success: function (res) {
-          resolve( res.tempFiles[0].path);
+        resolve(res.tempFiles[0].path);
       },
       fail: function (errMsg) {
         reject(errMsg);
@@ -278,31 +265,32 @@ function getImageInfo(filePath) {
   return promise;
 }
 
-function canvasToTempFilePath(canvasID){
-  var p = new Promise(function(resolve,reject){
+function canvasToTempFilePath(canvasID) {
+  var p = new Promise(function (resolve, reject) {
     wx.canvasToTempFilePath({
       canvasId: canvasID,
-      destHeight:100,
-      destWidth:100,
-      fileType:'png',
-      success:function(res){
+      destHeight: 100,
+      destWidth: 100,
+      fileType: 'png',
+      success: function (res) {
         resolve(res)
       },
-      fail:function(err){
+      fail: function (err) {
         reject(err)
       }
     }, this)
   })
   return p;
 }
-function downloadFile(url){
-  var p = new Promise(function (resolve,reject){
+
+function downloadFile(url) {
+  var p = new Promise(function (resolve, reject) {
     wx.downloadFile({
-      url:url,
-      success:function(res){
+      url: url,
+      success: function (res) {
         resolve(res);
       },
-      fail:function(err){
+      fail: function (err) {
         reject(res)
       }
     })
@@ -310,8 +298,8 @@ function downloadFile(url){
   return p;
 }
 
-function saveImageToPhotosAlbum(path){
-  var p = new Promise(function(resolve,reject){
+function saveImageToPhotosAlbum(path) {
+  var p = new Promise(function (resolve, reject) {
     wx.saveImageToPhotosAlbum({
       filePath: path,
       success: function (res) {
@@ -322,27 +310,25 @@ function saveImageToPhotosAlbum(path){
       }
     })
   })
-  return p; 
+  return p;
 }
 
 module.exports = {
-  formatTime: formatTime,
+ 
   getCOSInstance: getCOSInstance,
-  showLoading:showLoading,
-  hideLoading:hideLoading,
+  showLoading: showLoading,
+  hideLoading: hideLoading,
   parseExtractBlindWatermarkResponse: parseExtractBlindWatermarkResponse,
   parseEmbedBlindWatermarkResponse: parseEmbedBlindWatermarkResponse,
   getAuthorization: getAuthorization,
   getUrlRelativePath: getUrlRelativePath,
-  saveComposedImage: saveComposedImage,
-  getComposedImageWarmerURL: getComposedImageWarmerURL,
   showToast: showToast,
-  post:post,
-  chooseImage:chooseImage,
+  post: post,
+  chooseImage: chooseImage,
   getImageInfo: getImageInfo,
   timestampToString: timestampToString,
   canvasToTempFilePath: canvasToTempFilePath,
-  downloadFile:downloadFile,
+  downloadFile: downloadFile,
   saveImageToPhotosAlbum: saveImageToPhotosAlbum
 }
 

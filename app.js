@@ -11,11 +11,11 @@ App({
     })
   },
 
-  
+
   globalData: {
     userInfo: null,
-    WINDOW_WIDTH:300,
-    WINDOW_HEIGHT:300
+    WINDOW_WIDTH: 300,
+    WINDOW_HEIGHT: 300
   }
-  
+
 })

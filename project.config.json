@@ -1,6 +1,5 @@
 {
-	"description": "项目配置文件。",
-	"cloudfunctionRoot": "functions/",
+	"description": "项目配置文件",
 	"packOptions": {
 		"ignore": []
 	},
@@ -9,12 +8,17 @@
 		"es6": true,
 		"postcss": true,
 		"minified": true,
-		"newFeature": true
+		"newFeature": true,
+		"autoAudits": false,
+		"coverView": true
 	},
 	"compileType": "miniprogram",
-	"libVersion": "2.0.4",
+	"libVersion": "2.9.0",
 	"appid": "wx8d9d92e795b2929e",
-	"projectname": "photoWall-karis",
+	"projectname": "photoWallDemo",
+	"debugOptions": {
+		"hidedInDevtools": []
+	},
 	"isGameTourist": false,
 	"simulatorType": "wechat",
 	"simulatorPluginLibVersion": {},

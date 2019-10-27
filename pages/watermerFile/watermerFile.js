@@ -3,7 +3,7 @@ var config = require('../../utils/config.js');
 var util = require('../../utils/util.js');
 var cos = require('../../utils/util.js').getCOSInstance();
 var isButtonDown = false;
-var watermerKey = "watermer/watermer.png";
+
 Page({
 
   /**
@@ -44,17 +44,16 @@ Page({
 
   //水印图上传到cos
   onHandleUploadWaterMarkEvent: function () {
-    util.showLoading("生成中")
     var that = this;
     if (this.data.arrx.length != 0) {
       util.showLoading("生成中...");
-      util.canvasToTempFilePath('customCanvas').then(res=>{
+      util.canvasToTempFilePath('customCanvas').then(res => {
         var filePath = res.tempFilePath;
         //上传图片到cos
         cos.postObject({
           Bucket: config.Bucket,
           Region: config.Region,
-          Key: watermerKey,
+          Key: config.WatermerKey,
           FilePath: filePath,
           CacheControl: "no-cache"
         }, function (err, data) {
