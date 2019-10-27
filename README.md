@@ -23,6 +23,8 @@
 ### 4. 创建Bucket
 > 对象存储->存储桶列表->创建Bucket->访问权限(公有读私有写)
 ### 5. 在数据万象控制台绑定Bucket
+>!注意:数据万象大陆地区只支持以下几个region（北京、广州、上海、成都）[数据万象地域](https://cloud.tencent.com/document/product/460/31066)
+
 > 数据万象->Bucket管理->绑定Bucket->绑定已有Bucket
 ### 6. [下载安装微信开发者工具](https://developers.weixin.qq.com/miniprogram/dev/devtools/download.html   )
 ### 7. [GitHub下载照片墙demo](https://github.com/15809284891/photoWall ),导入到微信开发者工具中
