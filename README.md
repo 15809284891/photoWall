@@ -71,7 +71,7 @@
    "wx-server-sdk": "^0.8.1"
  }
   ```
-  - 编写云函数:
+  - 云函数:
 
 ```
   cloud.init()
@@ -102,11 +102,7 @@
         }]
       }
     }
-})
-```
-  - 获取临时密钥(调用云函数需要使用wx.cloud.init();进行初始化)
-
-  ```
+  // 获取临时密钥(调用云函数需要使用wx.cloud.init();进行初始化)
   const sts = require('qcloud-cos-sts');
   sts.getCredential({
     secretId: cosOptions.secretId,
@@ -128,7 +124,10 @@
       })
     }
   })
-  ```
+  
+})
+```
+
 
   - 上传并部署云端依赖
 
