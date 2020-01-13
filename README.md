@@ -64,7 +64,7 @@
   - Project.config.json中配置:"cloudfunctionRoot": "functions/"
   - 新建函数sts(也可以命名为其他的，但是需要将config/utils.js中的sts修改为您重新命名的云函数名称):
   - 在云开发控制台给云函数配置环境变量secretKey、secretId
-  - json 中添加如下代码
+  - 在云函数的package.json 中添加如下代码
   ```
   "dependencies": {    
   "qcloud-cos-sts": "^3.0.2",
